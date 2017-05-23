@@ -3,6 +3,8 @@ package com.hennen.moviechooser.models;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Created by Mark on 5/17/2017.
@@ -15,6 +17,22 @@ public class Movie {
     @GeneratedValue
     private int id;
 
+    @NotNull
+    @Size(min=3, max=15)
+    private String name;
+
+
     public Movie(){}
 
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

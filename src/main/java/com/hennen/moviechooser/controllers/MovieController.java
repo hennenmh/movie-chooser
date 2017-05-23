@@ -21,7 +21,7 @@ public class MovieController {
     public String index(Model model) {
 
         model.addAttribute("title", "Movie Chooser");
-
+        model.addAttribute("movies", movieDao.findAll());
         return "movie/index";
     }
 

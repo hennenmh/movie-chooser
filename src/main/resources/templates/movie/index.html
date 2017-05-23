@@ -8,24 +8,24 @@
 
 <nav th:replace="fragments :: navigation"></nav>
 
-<!--<p th:unless="${movies} and ${movies.size()}">no movies :(</p>-->
+<p th:unless="${movies} and ${movies.size()}">no movies :(</p>
 
 
-<!--<table class="table">-->
+<table class="table">
 
-    <!--<tr>-->
-        <!--<th>Name</th>-->
+    <tr>
+        <th>Name</th>
         <!--<th>Description</th>-->
         <!--<th>Category</th>-->
-    <!--</tr>-->
+    </tr>
 
-    <!--<tr th:each="cheese : ${cheeses}">-->
-        <!--<td th:text="${cheese.name}"></td>-->
+    <tr th:each="movie : ${movies}">
+        <td th:text="${movie.name}"></td>
         <!--<td th:text="${cheese.description}"></td>-->
         <!--<td th:text="${cheese.category.name}"></td>-->
-    <!--</tr>-->
+    </tr>
 
-<!--</table>-->
+</table>
 <!--<p>-->
     <!--<a href="cheese/add">Add</a> |-->
     <!--<a href="cheese/remove">Remove</a>-->
