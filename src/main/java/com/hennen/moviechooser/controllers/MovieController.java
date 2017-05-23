@@ -1,10 +1,16 @@
 package com.hennen.moviechooser.controllers;
 
+import com.hennen.moviechooser.models.Movie;
 import com.hennen.moviechooser.models.data.MovieDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.validation.Valid;
 
 /**
  * Created by Mark on 5/17/2017.
@@ -25,4 +31,25 @@ public class MovieController {
         return "movie/index";
     }
 
+    @RequestMapping(value = "add", method = RequestMethod.GET)
+    public String displayAddMovieForm(Model model) {
+
+        model.addAttribute("title", "Add Movie");
+        model.addAttribute(new Movie());
+
+        return "movie/add";
+    }
+
+    @RequestMapping(value = "add", method = RequestMethod.POST)
+    public String processAddMovieForm(@ModelAttribute @Valid Movie newMovie,
+                                      Errors errors,
+                                      Model model) {
+        if (errors.hasErrors()) {
+            model.addAttribute("title", "Add Movie");
+            return "movie/add";
+        }
+        movieDao.save(newMovie);
+
+        return "redirect:";
+    }
 }
