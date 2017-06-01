@@ -1,6 +1,8 @@
 package com.hennen.moviechooser.controllers;
 
+import com.hennen.moviechooser.models.Category;
 import com.hennen.moviechooser.models.Movie;
+import com.hennen.moviechooser.models.data.CategoryDao;
 import com.hennen.moviechooser.models.data.MovieDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,6 +26,9 @@ public class MovieController {
     @Autowired
     private MovieDao movieDao;
 
+    @Autowired
+    private CategoryDao categoryDao;
+
     @RequestMapping(value = "")
     public String index(Model model) {
 
@@ -37,18 +42,21 @@ public class MovieController {
 
         model.addAttribute("title", "Add Movie");
         model.addAttribute(new Movie());
+        model.addAttribute("categories", categoryDao.findAll());
 
         return "movie/add";
     }
 
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String processAddMovieForm(@ModelAttribute @Valid Movie newMovie,
-                                      Errors errors,
+                                      Errors errors, @RequestParam int categoryId,
                                       Model model) {
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Movie");
             return "movie/add";
         }
+        Category cat = categoryDao.findOne(categoryId);
+        newMovie.setCategory(cat);
         movieDao.save(newMovie);
 
         return "redirect:";

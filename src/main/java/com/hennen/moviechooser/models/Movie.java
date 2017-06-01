@@ -3,6 +3,7 @@ package com.hennen.moviechooser.models;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -21,6 +22,8 @@ public class Movie {
     @Size(min=3, max=15)
     private String name;
 
+    @ManyToOne
+    private Category category;
 
     public Movie(){}
 
@@ -34,5 +37,13 @@ public class Movie {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 }
