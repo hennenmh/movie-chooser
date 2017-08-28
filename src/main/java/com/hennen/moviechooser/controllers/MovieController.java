@@ -55,6 +55,7 @@ public class MovieController {
                                       Model model) {
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Movie");
+            model.addAttribute("categories", categoryDao.findAll());
             return "movie/add";
         }
         Category cat = categoryDao.findOne(categoryId);
@@ -95,10 +96,11 @@ public class MovieController {
         Category cat = categoryDao.findOne(categoryId);
         List<Movie> movies = cat.getMovies();
         String random = movies.get(new Random().nextInt(movies.size())).getName();
-        //String random = movies.get(new Random().nextInt(movies.size()));
+        model.addAttribute("categories", categoryDao.findAll());
+        model.addAttribute("title", "Movie Randomizer");
         model.addAttribute("result", random);
 
-        return "redirect:";
+        return "movie/random";
     }
 
 }
