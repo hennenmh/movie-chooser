@@ -42,4 +42,8 @@ public class Category {
     public int getId() {
         return id;
     }
+
+    public List<Movie> getMovies() {
+        return movies;
+    }
 }

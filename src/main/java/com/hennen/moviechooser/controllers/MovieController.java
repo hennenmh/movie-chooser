@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Mark on 5/17/2017.
@@ -63,18 +65,38 @@ public class MovieController {
     }
 
     @RequestMapping(value = "remove", method = RequestMethod.GET)
-    public String displayRemoveCheeseForm(Model model) {
+    public String displayRemoveMovieForm(Model model) {
         model.addAttribute("movies", movieDao.findAll());
         model.addAttribute("title", "Remove Movie");
         return "movie/remove";
     }
 
     @RequestMapping(value = "remove", method = RequestMethod.POST)
-    public String processRemoveCheeseForm(@RequestParam int[] movieIds) {
+    public String processRemoveMovieForm(@RequestParam int[] movieIds) {
 
         for (int movieId : movieIds) {
             movieDao.delete(movieId);
         }
+
+        return "redirect:";
+    }
+
+    @RequestMapping(value = "random", method = RequestMethod.GET)
+    public String displayRandomMovieForm(Model model) {
+        model.addAttribute("categories", categoryDao.findAll());
+        model.addAttribute("title", "Movie Randomizer");
+        return "movie/random";
+    }
+
+    @RequestMapping(value = "random", method = RequestMethod.POST)
+    public String processRandomMovieForm(@RequestParam int categoryId,
+                                         Model model) {
+
+        Category cat = categoryDao.findOne(categoryId);
+        List<Movie> movies = cat.getMovies();
+        String random = movies.get(new Random().nextInt(movies.size())).getName();
+        //String random = movies.get(new Random().nextInt(movies.size()));
+        model.addAttribute("result", random);
 
         return "redirect:";
     }
