@@ -1,71 +1,43 @@
 package com.hennen.moviechooser.models;
 
-import javax.persistence.*;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.constraints.Pattern;
 
 /**
- * Created by Mark on 5/30/2017.
+ * Created by Mark on 8/29/2017.
  */
 
 @Entity
-public class User {
-
-    @Id
-    @GeneratedValue
-    private int id;
+public class User extends AbstractEntity{
 
     @NotNull
-    @Size(min = 3, max = 15)
-    private String name;
+    @Pattern(regexp = "[a-zA-Z][a-zA-Z0-9_-]{4,11}", message = "Invalid username")
+    private String username;
 
     @NotNull
-    @Size(min = 3, max = 15)
-    private String password;
-
-    @OneToMany
-    @JoinColumn(name = "user_id")
-    private List<Movie> movies = new ArrayList<>();
-
-    //private String verify = "";
+    private String pwHash;
+    private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public User() {}
 
-    public int getId() {
-        return id;
+    public User(String username, String password) {
+        this.username = username;
+        this.pwHash = hashPassword(password);
     }
 
-    public String getName() {
-        return name;
+    public String getUsername() {
+        return username;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    private static String hashPassword(String password) {
+        return encoder.encode(password);
     }
 
-    public String getPassword() {
-        return password;
+    public boolean isMatchingPassword(String password) {
+        return encoder.matches(password, pwHash);
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<Movie> getMovies() {
-        return movies;
-    }
-
-    public void setMovies(List<Movie> movies) {
-        this.movies = movies;
-    }
-
-//    public String getVerify() {
-//        return verify;
-//    }
-//
-//    public void setVerify(String verify) {
-//        this.verify = verify;
-//    }
 }

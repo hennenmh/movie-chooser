@@ -10,10 +10,27 @@
 </head>
 <body>
 
-<nav th:fragment="navigation">
-    <a href="/movie">Home</a> |
-    <a href="/category">Categories</a>
-</nav>
+<div th:fragment="navigation">
+
+    <div th:if="${user}">
+        <nav class="user-nav">
+            <a href="/movie">Home</a> |
+            <a href="/category">Categories</a> |
+            <a href="/logout">Log Out</a>
+        </nav>
+
+    </div>
+
+    <div th:unless="${user}">
+
+        <nav>
+            <a href="/login">Log In</a>
+            <a href="/register">Register</a>
+        </nav>
+
+    </div>
+
+</div>
 
 </body>
 </html>
