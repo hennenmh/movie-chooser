@@ -18,7 +18,7 @@
         <th>Category</th>
     </tr>
 
-    <tr th:each="movie : ${movies}">
+    <tr th:each="movie : ${movies}" th:if="${movie.user.uid == session.userId}">
         <td th:text="${movie.name}"></td>
         <td th:text="${movie.category.name}"></td>
     </tr>

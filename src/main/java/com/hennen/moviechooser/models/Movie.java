@@ -25,6 +25,9 @@ public class Movie {
     @ManyToOne
     private Category category;
 
+    @ManyToOne
+    private User user;
+
     public Movie(){}
 
     public int getId() {
@@ -45,5 +48,13 @@ public class Movie {
 
     public void setCategory(Category category) {
         this.category = category;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

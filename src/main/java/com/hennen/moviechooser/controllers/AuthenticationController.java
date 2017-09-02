@@ -22,7 +22,7 @@ public class AuthenticationController extends AbstractController{
 
     @RequestMapping(value = "")
     public String index() {
-        return "movie/index";
+        return "movie";
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.GET)
@@ -34,9 +34,11 @@ public class AuthenticationController extends AbstractController{
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)
     public String register(@ModelAttribute @Valid RegisterForm form,
-                           Errors errors, HttpServletRequest request) {
+                           Errors errors, HttpServletRequest request,
+                           Model model) {
 
         if (errors.hasErrors()) {
+            model.addAttribute("title", "Register");
             return "register";
         }
 
@@ -44,6 +46,7 @@ public class AuthenticationController extends AbstractController{
 
         if (existingUser !=null) {
             errors.rejectValue("username", "username.alreadyexists", "A user with that username already exists");
+            model.addAttribute("title", "Register");
             return "register";
         }
 
@@ -51,7 +54,7 @@ public class AuthenticationController extends AbstractController{
         userDao.save(newUser);
         setUserInSession(request.getSession(), newUser);
 
-        return "redirect:";
+        return "redirect:/movie";
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -63,9 +66,11 @@ public class AuthenticationController extends AbstractController{
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public String login(@ModelAttribute @Valid LoginForm form,
-                        Errors errors, HttpServletRequest request) {
+                        Errors errors, HttpServletRequest request,
+                        Model model) {
 
         if (errors.hasErrors()) {
+            model.addAttribute("title", "Log In");
             return "login";
         }
 
@@ -74,17 +79,19 @@ public class AuthenticationController extends AbstractController{
 
         if (theUser == null) {
             errors.rejectValue("username", "user.invalid", "The given username does not exist");
+            model.addAttribute("title", "Log In");
             return "login";
         }
 
         if (!theUser.isMatchingPassword(password)) {
             errors.rejectValue("password", "password.invalid", "Invalid password");
+            model.addAttribute("title", "Log In");
             return "login";
         }
 
         setUserInSession(request.getSession(), theUser);
 
-        return "redirect:";
+        return "redirect:/movie";
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)

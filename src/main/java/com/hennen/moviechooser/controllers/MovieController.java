@@ -2,8 +2,10 @@ package com.hennen.moviechooser.controllers;
 
 import com.hennen.moviechooser.models.Category;
 import com.hennen.moviechooser.models.Movie;
+import com.hennen.moviechooser.models.User;
 import com.hennen.moviechooser.models.data.CategoryDao;
 import com.hennen.moviechooser.models.data.MovieDao;
+import com.hennen.moviechooser.models.data.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Created by Mark on 5/17/2017.
@@ -23,19 +26,15 @@ import java.util.Random;
 
 @Controller
 @RequestMapping("movie")
-public class MovieController {
-
-    @Autowired
-    private MovieDao movieDao;
-
-    @Autowired
-    private CategoryDao categoryDao;
+public class MovieController extends AbstractController{
 
     @RequestMapping(value = "")
-    public String index(Model model) {
+    public String index(Model model, HttpSession session,
+                        HttpServletRequest request) {
 
         model.addAttribute("title", "Movie Chooser");
         model.addAttribute("movies", movieDao.findAll());
+        session.setAttribute("userId", getUserFromSession(request.getSession()).getUid());
         return "movie/index";
     }
 
@@ -52,6 +51,7 @@ public class MovieController {
     @RequestMapping(value = "add", method = RequestMethod.POST)
     public String processAddMovieForm(@ModelAttribute @Valid Movie newMovie,
                                       Errors errors, @RequestParam int categoryId,
+                                      HttpServletRequest request,
                                       Model model) {
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Movie");
@@ -59,7 +59,9 @@ public class MovieController {
             return "movie/add";
         }
         Category cat = categoryDao.findOne(categoryId);
+        User user = userDao.findOne(getUserFromSession(request.getSession()).getUid());
         newMovie.setCategory(cat);
+        newMovie.setUser(user);
         movieDao.save(newMovie);
 
         return "redirect:";
@@ -91,11 +93,14 @@ public class MovieController {
 
     @RequestMapping(value = "random", method = RequestMethod.POST)
     public String processRandomMovieForm(@RequestParam int categoryId,
-                                         Model model) {
+                                         Model model, HttpServletRequest request) {
 
         Category cat = categoryDao.findOne(categoryId);
+        User user = userDao.findOne(getUserFromSession(request.getSession()).getUid());
         List<Movie> movies = cat.getMovies();
-        String random = movies.get(new Random().nextInt(movies.size())).getName();
+        List<Movie> userMovies = user.getMovies();
+        //TODO get list of movies to pull from category and user
+        String random = userMovies.get(new Random().nextInt(userMovies.size())).getName();
         model.addAttribute("categories", categoryDao.findAll());
         model.addAttribute("title", "Movie Randomizer");
         model.addAttribute("result", random);

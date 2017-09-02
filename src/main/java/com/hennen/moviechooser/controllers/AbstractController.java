@@ -1,6 +1,8 @@
 package com.hennen.moviechooser.controllers;
 
 import com.hennen.moviechooser.models.User;
+import com.hennen.moviechooser.models.data.CategoryDao;
+import com.hennen.moviechooser.models.data.MovieDao;
 import com.hennen.moviechooser.models.data.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,6 +17,12 @@ public abstract class AbstractController {
 
     @Autowired
     protected UserDao userDao;
+
+    @Autowired
+    protected MovieDao movieDao;
+
+    @Autowired
+    protected CategoryDao categoryDao;
 
     public static final String userSessionKey = "user_id";
 
