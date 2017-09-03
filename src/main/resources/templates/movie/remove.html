@@ -10,7 +10,7 @@
 
 <form method="post">
 
-    <div th:each="movie : ${movies}" class="checkbox">
+    <div th:each="movie : ${movies}" th:if="${movie.user.uid == session.userId}" class="checkbox">
         <input type="checkbox" name="movieIds" th:value="${movie.id}" th:id="${movie.id}"/>
         <label th:for="${movie.id}" th:text="${movie.name}"></label>
         <br />

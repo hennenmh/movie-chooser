@@ -68,9 +68,11 @@ public class MovieController extends AbstractController{
     }
 
     @RequestMapping(value = "remove", method = RequestMethod.GET)
-    public String displayRemoveMovieForm(Model model) {
+    public String displayRemoveMovieForm(Model model, HttpServletRequest request,
+                                         HttpSession session) {
         model.addAttribute("movies", movieDao.findAll());
         model.addAttribute("title", "Remove Movie");
+        session.setAttribute("userId", getUserFromSession(request.getSession()).getUid());
         return "movie/remove";
     }
 
@@ -97,13 +99,22 @@ public class MovieController extends AbstractController{
 
         Category cat = categoryDao.findOne(categoryId);
         User user = userDao.findOne(getUserFromSession(request.getSession()).getUid());
-        List<Movie> movies = cat.getMovies();
+        List<Movie> catMovies = cat.getMovies();
         List<Movie> userMovies = user.getMovies();
-        //TODO get list of movies to pull from category and user
-        String random = userMovies.get(new Random().nextInt(userMovies.size())).getName();
-        model.addAttribute("categories", categoryDao.findAll());
-        model.addAttribute("title", "Movie Randomizer");
-        model.addAttribute("result", random);
+        List<Movie> finalMovies = new ArrayList<Movie>(catMovies);
+        finalMovies.retainAll(userMovies);
+
+        try {
+            String random = finalMovies.get(new Random().nextInt(finalMovies.size())).getName();
+            model.addAttribute("categories", categoryDao.findAll());
+            model.addAttribute("title", "Movie Randomizer");
+            model.addAttribute("result", "You should watch " + random);
+        } catch (Exception e) {
+            model.addAttribute("categories", categoryDao.findAll());
+            model.addAttribute("title", "Movie Randomizer");
+            model.addAttribute("result", "No movies in that category");
+            return "movie/random";
+        }
 
         return "movie/random";
     }

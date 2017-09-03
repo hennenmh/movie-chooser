@@ -18,10 +18,7 @@ import javax.validation.Valid;
 
 @Controller
 @RequestMapping("category")
-public class CategoryController {
-
-    @Autowired
-    private CategoryDao categoryDao;
+public class CategoryController extends AbstractController {
 
     @RequestMapping(value = "")
     public String index(Model model) {
