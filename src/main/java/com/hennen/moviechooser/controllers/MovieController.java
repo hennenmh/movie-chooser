@@ -35,6 +35,7 @@ public class MovieController extends AbstractController{
         model.addAttribute("title", "Movie Chooser");
         model.addAttribute("movies", movieDao.findAll());
         session.setAttribute("userId", getUserFromSession(request.getSession()).getUid());
+        session.setAttribute("username", getUserFromSession(request.getSession()).getUsername());
         return "movie/index";
     }
 
@@ -70,6 +71,7 @@ public class MovieController extends AbstractController{
     @RequestMapping(value = "remove", method = RequestMethod.GET)
     public String displayRemoveMovieForm(Model model, HttpServletRequest request,
                                          HttpSession session) {
+
         model.addAttribute("movies", movieDao.findAll());
         model.addAttribute("title", "Remove Movie");
         session.setAttribute("userId", getUserFromSession(request.getSession()).getUid());
@@ -77,11 +79,22 @@ public class MovieController extends AbstractController{
     }
 
     @RequestMapping(value = "remove", method = RequestMethod.POST)
-    public String processRemoveMovieForm(@RequestParam int[] movieIds) {
+    public String processRemoveMovieForm(@RequestParam(required = false)int[] movieIds,
+                                         Model model, HttpSession session,
+                                         HttpServletRequest request) {
 
-        for (int movieId : movieIds) {
-            movieDao.delete(movieId);
+        try {
+            for (int movieId : movieIds) {
+                movieDao.delete(movieId);
+            }
+        } catch(Exception e) {
+            model.addAttribute("movies", movieDao.findAll());
+            model.addAttribute("title", "Remove Movie");
+            session.setAttribute("userId", getUserFromSession(request.getSession()).getUid());
+            model.addAttribute("message", "Please add or select movie(s) to delete");
+            return "movie/remove";
         }
+
 
         return "redirect:";
     }

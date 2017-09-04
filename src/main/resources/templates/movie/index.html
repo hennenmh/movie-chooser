@@ -10,6 +10,7 @@
 
 <p th:unless="${movies} and ${movies.size()}">no movies :(</p>
 
+<h3 th:text="'Welcome, ' + ${session.username}"></h3>
 
 <table class="table">
 
