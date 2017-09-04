@@ -59,6 +59,7 @@ public class MovieController extends AbstractController{
             model.addAttribute("categories", categoryDao.findAll());
             return "movie/add";
         }
+        
         Category cat = categoryDao.findOne(categoryId);
         User user = userDao.findOne(getUserFromSession(request.getSession()).getUid());
         newMovie.setCategory(cat);
